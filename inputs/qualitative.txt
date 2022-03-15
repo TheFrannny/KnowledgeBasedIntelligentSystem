@@ -1,0 +1,4 @@
+fish BT beef IF
+wine BT beer IF fish
+beef AND beer BT fish AND beer BT beef AND wine IF
+cake BT ice-cream IF soup

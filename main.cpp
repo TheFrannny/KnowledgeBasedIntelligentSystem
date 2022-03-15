@@ -42,8 +42,10 @@ static void on_activate (GtkApplication *app) {
 }
 
 int main(int argc, char **argv) {
-    // Create a new application
+
     cout << "reeee" << endl;
+
+    // Create a new application
     GtkApplication *app = gtk_application_new ("com.example.GtkApplication",
                                                G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (on_activate), NULL);

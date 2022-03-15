@@ -1,0 +1,3 @@
+fish AND wine, 0.8
+wine OR cake, 0.5
+beer AND beer OR beef AND NOT soup, 0.6
