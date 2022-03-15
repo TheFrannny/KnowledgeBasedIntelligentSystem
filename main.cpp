@@ -1,5 +1,7 @@
-#include <iostream>
+#include <bits/stdc++.h>
 #include <gtk/gtk.h>
+#include <windows.h>
+#include <string>
 using namespace std;
 
 /**
@@ -43,7 +45,29 @@ static void on_activate (GtkApplication *app) {
 
 int main(int argc, char **argv) {
 
-    cout << "reeee" << endl;
+    string rawInput;
+    vector<vector<string>> items;
+    ifstream attributesFile ("inputs/attributes.txt");
+
+    if(attributesFile.is_open()){
+        while (attributesFile.good()) {
+            getline(attributesFile, rawInput);
+
+            regex vowels("[^-0-9a-zA-Z]+");
+            rawInput = regex_replace(rawInput, vowels, " ");
+
+            istringstream iss(rawInput);
+
+            string attribute, zero, one;
+            iss >> attribute >> zero >> one;
+
+            items.push_back({zero, one});
+            cout << attribute << ' ' << zero << ' ' << one << endl;
+        }
+    }
+    else{
+        cout << "Couldnt open attributes file";
+    }
 
     // Create a new application
     GtkApplication *app = gtk_application_new ("com.example.GtkApplication",
