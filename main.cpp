@@ -1,9 +1,14 @@
 #include <bits/stdc++.h>
 #include <gtk/gtk.h>
-#include <windows.h>
-#include <string>
+#define maxAttributes 10 // change this to increase max bitset size, left it at 10 so printing is prettier
 using namespace std;
 
+vector<vector<string>> items; // attribute items
+ifstream attributesFile ("inputs/attributes.txt");
+ifstream constraintsFile ("inputs/constraints.txt");
+ifstream penaltyFile ("inputs/penalty.txt");
+ifstream possibilisticFile ("inputs/possibilistic.txt");
+ifstream qualitativeFile ("inputs/qualitative.txt");
 /**
  * AI project 3
  * Francisco Romero, William Daniel Hiromoto, Nolan Boner
@@ -43,13 +48,62 @@ static void on_activate (GtkApplication *app) {
     gtk_window_present (GTK_WINDOW (window));
 }
 
+/**
+ * Feed it a list of positions and bools, it will return true if all are true, else returns false;
+ * @param toCheck the string to check
+ * @param values first value is position, second value is
+ * @return
+ */
+int checkAnd(bitset<maxAttributes> toCheck, vector<pair<int,int>> values){
+    for(int i = 0; i < values.size(); i++)
+        if(toCheck.test(i) != values[i].second){
+            printf("Test Rejecting: %s at %d %d\n", toCheck.to_string().c_str(), values[i].first, values[i].second);
+            return 0;
+        }
+        else
+            printf("Test Accepting: %s at %d %d\n", toCheck.to_string().c_str(), values[i].first, values[i].second);
+
+    return 1;
+}
+
+int checkOr(bitset<maxAttributes> toCheck, vector<vector<pair<int,int>>> values){
+    for(int i = 0; i < values.size(); i++)
+        if(checkAnd(toCheck, values[i]))
+            return 1;
+    return 0;
+}
+
+/**
+ * Just a function for testing the other functions
+ */
+void testing(){
+    vector<pair<int,int>> test1;
+    test1.push_back(make_pair(0, 1));
+    test1.push_back(make_pair(1, 1));
+    test1.push_back(make_pair(2, 1));
+    test1.push_back(make_pair(3, 1));
+
+    vector<pair<int,int>> test2;
+    test2.push_back(make_pair(0, 1));
+    test2.push_back(make_pair(1, 0));
+    test2.push_back(make_pair(2, 0));
+    test2.push_back(make_pair(3, 1));
+
+    bitset<maxAttributes> bTest("1001");
+    //checkAnd(bTest, test1);
+    int orRestult = checkOr(bTest, {test1, test2});
+    if(orRestult)
+        cout << "Or Successful Yay!\n";
+    else
+        cout << "Or Failure!\n";
+}
+
 int main(int argc, char **argv) {
 
+    testing();
     string rawInput;
-    vector<vector<string>> items;
-    ifstream attributesFile ("inputs/attributes.txt");
 
-    if(attributesFile.is_open()){
+    if(attributesFile.is_open())
         while (attributesFile.good()) {
             getline(attributesFile, rawInput);
 
@@ -62,13 +116,10 @@ int main(int argc, char **argv) {
             iss >> attribute >> zero >> one;
 
             items.push_back({zero, one});
-            cout << attribute << ' ' << zero << ' ' << one << endl;
+            cout << "recording: " << attribute << ' ' << zero << ' ' << one << endl;
         }
-    }
-    else{
+    else
         cout << "Couldnt open attributes file";
-    }
-
     // Create a new application
     GtkApplication *app = gtk_application_new ("com.example.GtkApplication",
                                                G_APPLICATION_FLAGS_NONE);
